@@ -27,7 +27,7 @@ describe CASino::AuthTokensController do
 
       context 'with a not allowed service' do
         before(:each) do
-          FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+          FactoryBot.create :service_rule, :regex, url: '^https://.*'
         end
 
         let(:service) { 'http://www.example.org/' }

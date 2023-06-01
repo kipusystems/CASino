@@ -1,3 +1,5 @@
-require 'kaminari'
+if defined? ::Rails::Railtie
+  require 'kaminari'
+end
 
-Kaminari::Hooks.init
+#Kaminari::Hooks.init

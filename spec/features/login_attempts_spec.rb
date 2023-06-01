@@ -7,7 +7,7 @@ describe 'Session overview' do
 
   context 'when logged in' do
     let(:login_attempt) do
-      FactoryGirl.create :login_attempt, created_at: Time.zone.parse('2015-01-01 09:10'),
+      FactoryBot.create :login_attempt, created_at: Time.zone.parse('2015-01-01 09:10'),
                                          user: CASino::User.first
     end
 
@@ -17,8 +17,8 @@ describe 'Session overview' do
       visit login_attempts_path
     end
 
-    it { should have_text('TestBrowser') }
-    it { should have_text('133.133.133.133') }
-    it { should have_text('2015-01-01 09:10') }
+    it { should have_content('TestBrowser') }
+    it { should have_content('133.133.133.133') }
+    it { should have_content('2015-01-01 09:10') }
   end
 end

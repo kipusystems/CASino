@@ -4,7 +4,7 @@ describe CASino::ProxyTicketsController do
   let(:request_options) { params.merge(use_route: :casino) }
 
   describe 'GET "proxyValidate"' do
-    let(:proxy_ticket) { FactoryGirl.create :proxy_ticket }
+    let(:proxy_ticket) { FactoryBot.create :proxy_ticket }
     let(:service) { proxy_ticket.service }
     let(:parameters) { { service: service, ticket: proxy_ticket.ticket }}
     let(:params) { parameters }
@@ -92,7 +92,7 @@ describe CASino::ProxyTicketsController do
     end
 
     context 'with a proxy-granting ticket' do
-      let(:proxy_granting_ticket) { FactoryGirl.create :proxy_granting_ticket }
+      let(:proxy_granting_ticket) { FactoryBot.create :proxy_granting_ticket }
       let(:params) { parameters.merge(pgt: proxy_granting_ticket.ticket) }
 
       it 'answers with the success text' do

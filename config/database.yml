@@ -14,6 +14,6 @@ development:
 test:
   adapter: sqlite3
   database: ':memory:'
-  pool: 5
+  pool: 50
   timeout: 5000
   verbosity: quiet
