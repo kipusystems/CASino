@@ -8,18 +8,30 @@ module FeatureHelpers
 
   def sign_in(options = {})
     visit login_path
-    fill_in 'Username', with: options[:username] || 'testuser'
-    fill_in 'Password', with: options[:password] || 'foobar123'
-    click_button 'Login'
+    fill_in "username", with: options[:username] || 'testuser'
+    fill_in "password", with: options[:password] || 'foobar123'
+
+    click_link_or_button 'Login'
   end
 
   def enable_two_factor_authentication
     visit new_two_factor_authenticator_path
-    expect(page).to have_current_path('/two_factor_authenticators/new')
-    secret = find("p#secret").text.gsub(/^Secret:\s*/, '')
+    secret = find("p#secret", visible: :all).text.gsub(/^Secret:\s*/, '')
     ROTP::TOTP.new(secret).tap do |totp|
       fill_in 'otp', with: "#{totp.now}"
-      click_button 'Verify and enable'
+      click_link_or_button 'Verify and enable'
+    end
+  end
+
+  def enter_two_factor_authentication_code(totp)
+    fill_in 'otp', with: totp
+    click_link_or_button 'Continue'
+  end
+
+  def totp_by_username(username)
+    secret = CASino::User.where(username: username).first.two_factor_authenticators.active.first.secret
+    ROTP::TOTP.new(secret).tap do |totp|
+      return totp.now if totp.present?
     end
   end
 end

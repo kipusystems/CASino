@@ -8,7 +8,7 @@ class CASino::ServiceTicketsController < CASino::ApplicationController
     if ticket_valid_for_service?(@service_ticket, params[:service], renew: params[:renew])
       @username = @service_ticket.ticket_granting_ticket.user.username
     end
-    render :validate, formats: [:text]
+    render :validate, formats: [:plain]
   end
 
   def service_validate

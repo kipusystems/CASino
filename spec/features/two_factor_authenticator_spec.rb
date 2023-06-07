@@ -12,7 +12,9 @@ describe 'TwoFactorAuthenticator' do
 
     context 'with two-factor authentication enabled' do
       before do
+        # sign_in
         enable_two_factor_authentication
+        # a = CASino::TwoFactorAuthenticator.where(user_id: CASino::User.where(username: (options[:username] || 'testuser' )).id).first
       end
 
       describe 'disabling two-factor authentication' do

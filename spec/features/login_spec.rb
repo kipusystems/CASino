@@ -6,15 +6,20 @@ describe 'Login' do
   subject { page }
 
   context 'with two-factor authentication enabled' do
-    before do
-      in_browser(:other) do
+    before :example, mfa_enabled: true do
+      in_browser :other do
         sign_in
         @totp = enable_two_factor_authentication
       end
     end
 
-    context 'with valid username and password' do
-      before { sign_in }
+    context 'with valid username and password', mfa_enabled: true do
+
+      before do
+        in_browser(:username_and_password) do
+          sign_in
+        end
+      end
 
       it { should_not have_button('Login') }
       it { should have_button('Continue') }
@@ -22,8 +27,10 @@ describe 'Login' do
 
       context 'when filling in the correct otp' do
         before do
-          fill_in :otp, with: @totp.now
-          click_button 'Continue'
+          in_browser(:username_and_password) do
+            enter_two_factor_authentication_code @totp.now
+            save_and_open_page
+          end
         end
 
         it { should_not have_button('Login') }
@@ -45,7 +52,9 @@ describe 'Login' do
 
   context 'with two-factor authentication disabled' do
     context 'with valid username and password' do
-      before { sign_in }
+      before {
+        sign_in
+      }
 
       it { should_not have_button('Login') }
       its(:current_path) { should == sessions_path }

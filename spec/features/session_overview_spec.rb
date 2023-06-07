@@ -5,20 +5,22 @@ describe 'Session overview' do
 
   subject { page }
 
+  before do
+    sign_in
+  end
+
   context 'when logged in' do
-    let(:login_attempt) do
+    let!(:login_attempt) do
       FactoryBot.create :login_attempt, created_at: Time.zone.parse('2015-01-01 09:10'),
                                          user: CASino::User.first
     end
 
     before do
-      sign_in
       login_attempt.touch
       visit sessions_path
     end
 
     it { should have_button('Logout') }
-    # it { should have_link('Logout', href: logout_path) }
     it { should have_content('Your Active Sessions') }
     it { should have_content('Current session') }
 

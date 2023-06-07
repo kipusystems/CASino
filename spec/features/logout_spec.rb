@@ -8,7 +8,7 @@ describe 'Logout' do
   context 'when logged in' do
     before do
       sign_in
-      click_button 'Logout'
+      click_link_or_button 'Logout'
     end
 
     it { should have_content('logged out') }

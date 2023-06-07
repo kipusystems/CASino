@@ -30,4 +30,7 @@ Dummy::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Set test order to :sorted to ensure that test cases are run in a deterministic order.
+  config.active_support.test_order = :sorted
 end

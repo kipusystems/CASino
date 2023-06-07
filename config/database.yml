@@ -12,8 +12,12 @@ development:
   timeout: 5000
 
 test:
-  adapter: sqlite3
-  database: ':memory:'
+  adapter: postgresql
+  database: db_test_postgresql
+  username: rails
+  password: 1qaz!QAZ
+  host: 127.0.0.1
   pool: 50
   timeout: 5000
+  min_messages: WARNING
   verbosity: quiet

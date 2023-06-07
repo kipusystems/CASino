@@ -23,10 +23,10 @@ Gem::Specification.new do |s|
     s.cert_chain  = ['casino-public_cert.pem']
   end
 
-  s.add_development_dependency 'capybara', '~> 2.3.0'
+  s.add_development_dependency 'capybara', '~> 3.36.0'
   s.add_development_dependency 'webdrivers'
   s.add_development_dependency 'selenium-webdriver', '< 4.2', '>= 4.1.0'
-  s.add_development_dependency 'nokogiri', '~> 1.6.0'
+  s.add_development_dependency 'nokogiri', '~> 1.13.0'
   s.add_development_dependency 'loofah', '~> 2.19.1'
   s.add_development_dependency 'minitest', '~> 5.1.0'
   s.add_development_dependency 'rake', '~> 10.0'
@@ -34,12 +34,17 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-its', '~> 1.3'
   s.add_development_dependency 'rspec-rails', '~> 3.9.1'
   s.add_development_dependency 'sqlite3', '~> 1.3.6'
+  s.add_development_dependency 'pg', '~> 0.21.0'
   s.add_development_dependency 'factory_bot', '~> 5.1.2'
   s.add_development_dependency 'webmock', '~> 3.18.1'
   s.add_development_dependency 'coveralls', '~> 0.8.23'
-  s.add_runtime_dependency 'pry'
+  s.add_runtime_dependency 'byebug'
+  s.add_development_dependency 'launchy'
+  s.add_development_dependency 'database_cleaner-active_record'
+  s.add_development_dependency 'puma', '~> 5.6.0'
 
-  s.add_runtime_dependency 'rails', '>= 4.1.0', '< 5.0.0'
+
+  s.add_runtime_dependency 'rails', '>= 4.2.0', '< 5.0.0'
   s.add_runtime_dependency 'sass-rails', '>= 4.0.0', '< 6.0.0'
   s.add_runtime_dependency 'addressable', '~> 2.8.4'
   s.add_runtime_dependency 'terminal-table', '~> 3.0.2'
