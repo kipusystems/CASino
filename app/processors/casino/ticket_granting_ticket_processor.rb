@@ -1,5 +1,5 @@
 require_dependency 'casino/browser_processor'
-puts "Loading Casino::TicketGrantingTicketProcessor"
+
 module Casino::TicketGrantingTicketProcessor
   extend ActiveSupport::Concern
 

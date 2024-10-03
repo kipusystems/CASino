@@ -1,7 +1,5 @@
 require 'addressable/uri'
-# require 'casino/ticket_granting_ticket_processor'
-# require 'casino/service_ticket_processor'
-puts "Loading Casino::SessionsHelper"
+
 module Casino::SessionsHelper
   include Casino::TicketGrantingTicketProcessor
   include Casino::ServiceTicketProcessor
