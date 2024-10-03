@@ -1,4 +1,4 @@
-class AddUserIpToTicketGrantingTicket < ActiveRecord::Migration
+class AddUserIpToTicketGrantingTicket < ActiveRecord::Migration[7.2]
   def up
     add_column :casino_ticket_granting_tickets, :user_ip, :string
   end

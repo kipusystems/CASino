@@ -1,3 +1,3 @@
 Dummy::Application.routes.draw do
-  mount CASino::Engine => '/', :as => 'casino'
+  mount Casino::Engine, at: '/', :as => 'casino'
 end

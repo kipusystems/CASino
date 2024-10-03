@@ -1,5 +1,5 @@
 # This migration comes from casino (originally 20140831205255)
-class CreateAuthTokenTickets < ActiveRecord::Migration
+class CreateAuthTokenTickets < ActiveRecord::Migration[7.2]
   def change
     create_table :casino_auth_token_tickets do |t|
       t.string :ticket, :null => false

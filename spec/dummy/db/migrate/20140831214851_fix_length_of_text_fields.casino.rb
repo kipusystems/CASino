@@ -1,5 +1,5 @@
 # This migration comes from casino (originally 20140827183611)
-class FixLengthOfTextFields < ActiveRecord::Migration
+class FixLengthOfTextFields < ActiveRecord::Migration[7.2]
   def change
     change_column :casino_proxy_tickets, :service, :text, :limit => nil
     change_column :casino_service_tickets, :service, :text, :limit => nil

@@ -1,16 +1,17 @@
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
-  factory :login_ticket, class: CASino::LoginTicket do
+FactoryBot.define do
+  factory :login_ticket, class: 'Casino::LoginTicket' do
     sequence :ticket do |n|
       "LT-ticket#{n}"
     end
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
+
     trait :expired do
-      created_at 601.seconds.ago
+      created_at { 601.seconds.ago }
     end
   end
 end

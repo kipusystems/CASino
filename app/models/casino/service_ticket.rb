@@ -1,24 +1,24 @@
 require 'addressable/uri'
 
-class CASino::ServiceTicket < ActiveRecord::Base
-  include CASino::ModelConcern::Ticket
+class Casino::ServiceTicket < ActiveRecord::Base
+  include Casino::ModelConcern::Ticket
 
   self.ticket_prefix = 'ST'.freeze
 
-  belongs_to :ticket_granting_ticket
+  belongs_to :ticket_granting_ticket, optional: true
   before_destroy :send_single_sign_out_notification, if: :consumed?
   has_many :proxy_granting_tickets, as: :granter, dependent: :destroy
 
   def self.cleanup_unconsumed
-    self.delete_all(['created_at < ? AND consumed = ?', CASino.config.service_ticket[:lifetime_unconsumed].seconds.ago, false])
+    self.where('created_at < ? AND consumed = ?', Casino.config.service_ticket[:lifetime_unconsumed].seconds.ago, false).delete_all
   end
 
   def self.cleanup_consumed
-    self.destroy_all(['(ticket_granting_ticket_id IS NULL OR created_at < ?) AND consumed = ?', CASino.config.service_ticket[:lifetime_consumed].seconds.ago, true])
+    self.where('(ticket_granting_ticket_id IS NULL OR created_at < ?) AND consumed = ?', Casino.config.service_ticket[:lifetime_consumed].seconds.ago, true).destroy_all
   end
 
   def self.cleanup_consumed_hard
-    self.delete_all(['created_at < ? AND consumed = ?', (CASino.config.service_ticket[:lifetime_consumed] * 2).seconds.ago, true])
+    self.where('created_at < ? AND consumed = ?', (Casino.config.service_ticket[:lifetime_consumed] * 2).seconds.ago, true).delete_all
   end
 
   def service=(service)
@@ -34,14 +34,15 @@ class CASino::ServiceTicket < ActiveRecord::Base
 
   def expired?
     lifetime = if consumed?
-      CASino.config.service_ticket[:lifetime_consumed]
+      Casino.config.service_ticket[:lifetime_consumed]
     else
-      CASino.config.service_ticket[:lifetime_unconsumed]
+      Casino.config.service_ticket[:lifetime_unconsumed]
     end
     (Time.now - (self.created_at || Time.now)) > lifetime
   end
 
   private
+
   def send_single_sign_out_notification
     notifier = SingleSignOutNotifier.new(self)
     notifier.notify

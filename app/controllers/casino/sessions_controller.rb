@@ -1,7 +1,9 @@
-class CASino::SessionsController < CASino::ApplicationController
-  include CASino::SessionsHelper
-  include CASino::AuthenticationProcessor
-  include CASino::TwoFactorAuthenticatorProcessor
+# require 'casino/application_controller'
+
+class Casino::SessionsController < Casino::ApplicationController
+  include Casino::SessionsHelper
+  include Casino::AuthenticationProcessor
+  include Casino::TwoFactorAuthenticatorProcessor
 
   before_action :validate_login_ticket, only: [:create]
   before_action :ensure_service_allowed, only: [:new, :create]
@@ -15,9 +17,14 @@ class CASino::SessionsController < CASino::ApplicationController
   end
 
   def new
-    tgt = current_ticket_granting_ticket
-    return handle_signed_in(tgt) unless params[:renew] || tgt.nil?
-    redirect_to(params[:service]) if params[:gateway] && params[:service].present?
+    respond_to do |format|
+      format.html do
+        tgt = current_ticket_granting_ticket
+        return handle_signed_in(tgt) unless params[:renew] || tgt.nil?
+        redirect_to(params[:service], allow_other_host: true) if params[:gateway] && params[:service].present?
+      end
+      format.xml { head :not_acceptable }
+    end
   end
 
   def create
@@ -41,14 +48,18 @@ class CASino::SessionsController < CASino::ApplicationController
       .ticket_granting_tickets
       .where('id != ?', current_ticket_granting_ticket.id)
       .destroy_all if signed_in?
-    redirect_to params[:service] || sessions_path
+    if params[:service].present?
+      redirect_to params[:service], allow_other_host: true
+    else
+      redirect_to sessions_path
+    end
   end
 
   def logout
     sign_out
     @url = params[:url]
     if params[:service].present? && service_allowed?(params[:service])
-      redirect_to params[:service], status: :see_other
+      redirect_to params[:service], status: :see_other, allow_other_host: true
     end
   end
 
@@ -68,7 +79,7 @@ class CASino::SessionsController < CASino::ApplicationController
   end
 
   def validate_login_ticket
-    unless CASino::LoginTicket.consume(params[:lt])
+    unless Casino::LoginTicket.consume(params[:lt])
       show_login_error I18n.t('login_credential_acceptor.invalid_login_ticket')
     end
   end

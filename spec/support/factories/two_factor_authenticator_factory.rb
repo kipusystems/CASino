@@ -1,16 +1,16 @@
-require 'factory_girl'
+require 'factory_bot'
 require 'rotp'
 
-FactoryGirl.define do
-  factory :two_factor_authenticator, class: CASino::TwoFactorAuthenticator do
+FactoryBot.define do
+  factory :two_factor_authenticator, class: 'Casino::TwoFactorAuthenticator' do
     user
     secret do
-      ROTP::Base32.random_base32
+      ROTP::Base32.random
     end
-    active true
+    active { true }
 
     trait :inactive do
-      active false
+      active { false }
     end
   end
 end

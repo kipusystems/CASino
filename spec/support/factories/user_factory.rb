@@ -1,11 +1,13 @@
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
-  factory :user, class: CASino::User do
-    authenticator 'test'
-    sequence(:username) do |n|
-      "test#{n}"
-    end
-    extra_attributes({ fullname: "Test User", age: 15, roles: [:user] })
+FactoryBot.define do
+  factory :user, class: 'Casino::User' do
+    authenticator { 'test' }
+    sequence(:username) { |n| "test#{n}" }
+
+    # Assuming fullname, age, and roles are attributes of Casino::User
+    fullname { "Test User" }
+    age { 15 }
+    roles { [:user] }  # This should be an array if roles are stored that way
   end
 end

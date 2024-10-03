@@ -1,17 +1,13 @@
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
-  factory :proxy_ticket, class: CASino::ProxyTicket do
-    proxy_granting_ticket
-    sequence :ticket do |n|
-      "PT-ticket#{n}"
-    end
-    sequence :service do |n|
-      "imaps://mail#{n}.example.org/"
-    end
+FactoryBot.define do
+  factory :proxy_ticket, class: 'Casino::ProxyTicket' do
+    association :proxy_granting_ticket
+    sequence(:ticket) { |n| "PT-ticket#{n}" }
+    sequence(:service) { |n| "imaps://mail#{n}.example.org/" }
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
   end
 end
