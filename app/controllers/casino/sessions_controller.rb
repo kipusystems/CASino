@@ -4,11 +4,15 @@ class Casino::SessionsController < Casino::ApplicationController
   include Casino::SessionsHelper
   include Casino::AuthenticationProcessor
   include Casino::TwoFactorAuthenticatorProcessor
-
-  before_action :validate_login_ticket, only: [:create]
+  # The original way we overwrote these methods (for whatever reason)
+  # so to not need to update the custom EMR code we can skip this because
+  # the ticket gets generated in the create method in the new version.
+  # before_action :validate_login_ticket, only: [:create]
   before_action :ensure_service_allowed, only: [:new, :create]
   before_action :load_ticket_granting_ticket_from_parameter, only: [:validate_otp]
   before_action :ensure_signed_in, only: [:index, :destroy]
+
+  skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
 
   def index
     @ticket_granting_tickets = current_user.ticket_granting_tickets.active
@@ -24,6 +28,9 @@ class Casino::SessionsController < Casino::ApplicationController
         redirect_to(params[:service], allow_other_host: true) if params[:gateway] && params[:service].present?
       end
       format.xml { head :not_acceptable }
+      format.json do
+        head :ok
+      end
     end
   end
 

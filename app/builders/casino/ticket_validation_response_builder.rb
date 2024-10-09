@@ -41,7 +41,15 @@ class Casino::TicketValidationResponseBuilder
     if value.kind_of?(String) || value.kind_of?(Numeric) || value.kind_of?(Symbol)
       builder.cas key, "#{value}"
     elsif value.kind_of?(Array)
-      value.each { |v| serialize_extra_attribute(builder, key, v) }
+      # This is specific to EMR which for some reason expects
+      # an array within XML instead of the XML pattern for arrays.
+      if key == :roles
+        builder.cas key, value.inspect
+      else
+        builder.cas key do |container|
+          value.each { |v| serialize_extra_attribute(container, key, v) }
+        end
+      end
     else
       builder.cas key do |container|
         container.cdata! value.to_yaml

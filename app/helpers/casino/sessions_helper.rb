@@ -88,6 +88,9 @@ module Casino::SessionsHelper
       render 'casino/sessions/service_not_allowed', status: 403
     else
       url = acquire_service_ticket(tgt, params[:service], options).service_with_ticket_url
+      # Adding this becamse the EMR expects this header instead of location
+      # and don't need to update the EMR code.
+      response.headers['redirect_url'] = url
       redirect_to url, status: :see_other, allow_other_host: true
     end
   end
