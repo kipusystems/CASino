@@ -37,7 +37,7 @@ module Casino
       lifetime_unconsumed: 300,
       lifetime_consumed: 86400,
       single_sign_out_notification: {
-        timeout: 5
+        timeout: ENV["RACK_TIMEOUT_SERVICE_TIMEOUT"]&.to_i || 60
       }
     },
     proxy_ticket: {
