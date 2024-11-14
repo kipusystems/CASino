@@ -30,7 +30,7 @@ module Casino::TicketGrantingTicketProcessor
   def acquire_ticket_granting_ticket(authentication_result, user_agent, user_ip, options = {})
     user_data = authentication_result[:user_data]
     user = load_or_initialize_user(authentication_result[:authenticator], user_data[:username], user_data[:extra_attributes])
-    cleanup_expired_ticket_granting_tickets(user)
+    # cleanup_expired_ticket_granting_tickets(user)
     user.ticket_granting_tickets.create!({
       awaiting_two_factor_authentication: !user.active_two_factor_authenticator.nil?,
       user_agent: user_agent,
