@@ -1,8 +1,8 @@
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
-  factory :service_ticket, class: CASino::ServiceTicket do
-    ticket_granting_ticket
+FactoryBot.define do
+  factory :service_ticket, class: 'Casino::ServiceTicket' do
+    association :ticket_granting_ticket, factory: :ticket_granting_ticket
     sequence :ticket do |n|
       "ST-ticket#{n}"
     end
@@ -11,7 +11,7 @@ FactoryGirl.define do
     end
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
   end
 end

@@ -1,10 +1,30 @@
-require 'casino'
-require 'casino/inflections'
+# require 'casino'
+# require 'casino/inflections'
 require 'yaml'
 
-module CASino
+module Casino
   class Engine < Rails::Engine
-    isolate_namespace CASino
+    isolate_namespace Casino
+
+    # config.autoload_paths += %W(
+    # #{config.root}/app/processors/
+    #   #{config.root}/app/processors/casino
+    #   #{config.root}/app/helpers
+    #   #{config.root}/app/models
+    #   #{config.root}/app/models/casino
+    #   #{config.root}/app/models/casino/model_concern
+    #   #{config.root}/app/controllers/casino/controller_concern
+    # )
+
+    # config.eager_load_paths += %W(
+    # #{config.root}/app/processors/
+    #   #{config.root}/app/processors/casino
+    #   #{config.root}/app/helpers
+    #   #{config.root}/app/models
+    #   #{config.root}/app/models/casino
+    #   #{config.root}/app/models/casino/model_concern
+    #   #{config.root}/app/controllers/casino/controller_concern
+    # )
 
     rake_tasks { require 'casino/tasks' }
 
@@ -14,14 +34,14 @@ module CASino
 
     private
     def apply_yaml_config(yaml)
-      cfg = (YAML.load(ERB.new(yaml).result)||{}).fetch(Rails.env, {})
+      cfg = (YAML.load(ERB.new(yaml).result, aliases: true)||{}).fetch(Rails.env, {})
       cfg.each do |k,v|
         value = if v.is_a? Hash
-          CASino.config.fetch(k.to_sym,{}).merge(v.symbolize_keys)
+          Casino.config.fetch(k.to_sym,{}).merge(v.symbolize_keys)
         else
           v
         end
-        CASino.config.send("#{k}=", value)
+        Casino.config.send("#{k}=", value)
       end
     end
 

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 shared_examples_for 'a service ticket validator' do
-  include CASino::Engine.routes.url_helpers
+  include Casino::Engine.routes.url_helpers
   let(:request_options) { params.merge(use_route: :casino) }
-  let(:service_ticket) { FactoryGirl.create :service_ticket }
+  let(:service_ticket) { FactoryBot.create :service_ticket }
   let(:service) { service_ticket.service }
   let(:parameters) { { service: service, ticket: service_ticket.ticket }}
   let(:params) { parameters }
@@ -20,7 +20,7 @@ shared_examples_for 'a service ticket validator' do
 
         context "without '#{missing_parameter}'" do
           it 'answers with the failure text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_failure
           end
         end
@@ -30,22 +30,22 @@ shared_examples_for 'a service ticket validator' do
     context 'with an unconsumed service ticket' do
       context 'with extra attributes using strings as keys' do
         before(:each) do
-          CASino::User.any_instance.stub(:extra_attributes).and_return({ "id" => 1234 })
+          Casino::User.any_instance.stub(:extra_attributes).and_return({ "id" => 1234 })
         end
 
         it 'includes the extra attributes' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ /<cas\:id>1234<\/cas\:id\>/
         end
       end
 
       context 'with extra attributes using array as value' do
         before(:each) do
-          CASino::User.any_instance.stub(:extra_attributes).and_return({ "memberOf" => [ "test", "yolo" ] })
+          Casino::User.any_instance.stub(:extra_attributes).and_return({ "memberOf" => [ "test", "yolo" ] })
         end
 
         it 'includes all values' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ /<cas\:memberOf>test<\/cas\:memberOf\>/
           response.body.should =~ /<cas\:memberOf>yolo<\/cas\:memberOf\>/
         end
@@ -53,23 +53,24 @@ shared_examples_for 'a service ticket validator' do
 
       context 'issued from a long_term ticket-granting ticket' do
         before(:each) do
+          Casino::User.any_instance.stub(:extra_attributes).and_return({ "memberOf" => [ "test", "yolo" ] })
           service_ticket.ticket_granting_ticket.update_attribute(:long_term, true)
         end
 
         it 'includes the long-term flag in the answer' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ /<cas\:longTermAuthenticationRequestTokenUsed>true<\/cas\:longTermAuthenticationRequestTokenUsed>/
         end
       end
 
       context 'without renew flag' do
         it 'consumes the service ticket' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           service_ticket.reload.consumed.should == true
         end
 
         it 'answers with the success text' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ regex_success
         end
       end
@@ -78,7 +79,7 @@ shared_examples_for 'a service ticket validator' do
         let(:service) { "#{service_ticket.service}?" }
 
         it 'answers with the success text' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ regex_success
         end
       end
@@ -88,12 +89,12 @@ shared_examples_for 'a service ticket validator' do
 
         context 'with a service ticket without issued_from_credentials flag' do
           it 'consumes the service ticket' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             service_ticket.reload.consumed.should == true
           end
 
           it 'answers with the failure text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_failure
           end
         end
@@ -105,12 +106,12 @@ shared_examples_for 'a service ticket validator' do
           end
 
           it 'consumes the service ticket' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             service_ticket.reload.consumed.should == true
           end
 
           it 'answers with the success text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_success
           end
         end
@@ -128,36 +129,36 @@ shared_examples_for 'a service ticket validator' do
           let(:pgt_url) { 'http://www.example.org' }
 
           it 'answers with the success text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_success
           end
 
           it 'does not create a proxy-granting ticket' do
             lambda do
-              get validation_action, request_options
+              get validation_action, params: request_options
             end.should_not change(service_ticket.proxy_granting_tickets, :count)
           end
         end
 
         it 'answers with the success text' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ regex_success
         end
 
         it 'includes the PGTIOU in the response' do
-          get validation_action, request_options
+          get validation_action, params: request_options
           response.body.should =~ /\<cas\:proxyGrantingTicket\>\n?\s*PGTIOU-.+/
         end
 
         it 'creates a proxy-granting ticket' do
           lambda do
-            get validation_action, request_options
+            get validation_action, params: request_options
           end.should change(service_ticket.proxy_granting_tickets, :count).by(1)
         end
 
         it 'contacts the callback server' do
-          get validation_action, request_options
-          proxy_granting_ticket = CASino::ProxyGrantingTicket.last
+          get validation_action, params: request_options
+          proxy_granting_ticket = Casino::ProxyGrantingTicket.last
           WebMock.should have_requested(:get, 'https://www.example.org').with(query: {
             pgtId: proxy_granting_ticket.ticket,
             pgtIou: proxy_granting_ticket.iou
@@ -170,13 +171,13 @@ shared_examples_for 'a service ticket validator' do
           end
 
           it 'answers with the success text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_success
           end
 
           it 'does not create a proxy-granting ticket' do
             lambda do
-              get validation_action, request_options
+              get validation_action, params: request_options
             end.should_not change(service_ticket.proxy_granting_tickets, :count)
           end
         end
@@ -187,13 +188,13 @@ shared_examples_for 'a service ticket validator' do
           end
 
           it 'answers with the success text' do
-            get validation_action, request_options
+            get validation_action, params: request_options
             response.body.should =~ regex_success
           end
 
           it 'does not create a proxy-granting ticket' do
             lambda do
-              get validation_action, request_options
+              get validation_action, params: request_options
             end.should_not change(service_ticket.proxy_granting_tickets, :count)
           end
         end
@@ -206,19 +207,19 @@ shared_examples_for 'a service ticket validator' do
       end
 
       it 'answers with the failure text' do
-        get validation_action, request_options
+        get validation_action, params: request_options
         response.body.should =~ regex_failure
       end
     end
   end
 end
 
-describe CASino::ServiceTicketsController do
+describe Casino::ServiceTicketsController do
   let(:validation_action) { :service_validate }
   it_behaves_like 'a service ticket validator'
 end
 
-describe CASino::ProxyTicketsController do
+describe Casino::ProxyTicketsController do
   let(:validation_action) { :proxy_validate }
   it_behaves_like 'a service ticket validator'
 end

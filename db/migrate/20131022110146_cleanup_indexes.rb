@@ -1,6 +1,6 @@
-class CleanupIndexes < ActiveRecord::Migration
+class CleanupIndexes < ActiveRecord::Migration[7.2]
   def change
-    # delete some leftovers in migrated CASino 1.x installations
+    # delete some leftovers in migrated Casino 1.x installations
     remove_deprecated_index_if_exists :login_tickets, [:ticket]
     remove_deprecated_index_if_exists :proxy_granting_tickets, [:granter_type, :granter_id]
     remove_deprecated_index_if_exists :proxy_granting_tickets, [:iou]
@@ -18,7 +18,7 @@ class CleanupIndexes < ActiveRecord::Migration
   def remove_deprecated_index_if_exists(old_table_name, column_names)
     table_name = :"casino_#{old_table_name}"
     index_name = :"index_#{old_table_name}_on_#{column_names.join('_and_')}"
-    if index_name_exists?(table_name, index_name, false)
+    if index_name_exists?(table_name, index_name)
       remove_index table_name, name: index_name
     else
       puts "index #{index_name} on #{table_name} not found"

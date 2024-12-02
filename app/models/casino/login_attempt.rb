@@ -1,5 +1,5 @@
-class CASino::LoginAttempt < ActiveRecord::Base
-  include CASino::ModelConcern::BrowserInfo
+class Casino::LoginAttempt < ActiveRecord::Base
+  include Casino::ModelConcern::BrowserInfo
 
   belongs_to :user
 end

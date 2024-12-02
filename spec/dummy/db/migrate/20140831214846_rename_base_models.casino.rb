@@ -1,5 +1,5 @@
 # This migration comes from casino (originally 20130809135401)
-class RenameBaseModels < ActiveRecord::Migration
+class RenameBaseModels < ActiveRecord::Migration[7.2]
   def up
     # Login Tickets
     rename_table :login_tickets, :casino_login_tickets
@@ -15,7 +15,7 @@ class RenameBaseModels < ActiveRecord::Migration
     unless index_exists?(:casino_proxy_granting_tickets, :iou)
       add_index :casino_proxy_granting_tickets, :iou, :unique => true
     end
-    unless index_exists?(:casino_proxy_granting_tickets, :name => "index_casino_proxy_granting_tickets_on_granter")
+    unless index_exists?(:casino_proxy_granting_tickets, :granter_type, unique: true, :name => "index_casino_proxy_granting_tickets_on_granter")
       # Uses a custom index name because the generated one exceeds the size limit
       add_index :casino_proxy_granting_tickets, [:granter_type, :granter_id], :name => "index_casino_proxy_granting_tickets_on_granter", :unique => true
     end

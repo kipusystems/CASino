@@ -1,3 +1,3 @@
-module CASino
-  VERSION = '4.1.2'
+module Casino
+  VERSION = '5.0.0'
 end

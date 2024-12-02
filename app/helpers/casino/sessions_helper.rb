@@ -1,8 +1,8 @@
 require 'addressable/uri'
 
-module CASino::SessionsHelper
-  include CASino::TicketGrantingTicketProcessor
-  include CASino::ServiceTicketProcessor
+module Casino::SessionsHelper
+  include Casino::TicketGrantingTicketProcessor
+  include Casino::ServiceTicketProcessor
 
   def current_ticket_granting_ticket?(ticket_granting_ticket)
     ticket_granting_ticket.ticket == cookies[:tgt]
@@ -41,7 +41,7 @@ module CASino::SessionsHelper
   def set_tgt_cookie(tgt)
     cookies[:tgt] = { value: tgt.ticket }.tap do |cookie|
       if tgt.long_term?
-        cookie[:expires] = CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now
+        cookie[:expires] = Casino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now
       end
     end
   end
@@ -52,7 +52,7 @@ module CASino::SessionsHelper
   end
 
   def log_failed_login(username)
-    CASino::User.where(username: username).each do |user|
+    Casino::User.where(username: username).each do |user|
       create_login_attempt(user, false)
     end
   end
@@ -88,7 +88,10 @@ module CASino::SessionsHelper
       render 'casino/sessions/service_not_allowed', status: 403
     else
       url = acquire_service_ticket(tgt, params[:service], options).service_with_ticket_url
-      redirect_to url, status: :see_other
+      # Adding this becamse the EMR expects this header instead of location
+      # and don't need to update the EMR code.
+      response.headers['redirect_url'] = url
+      redirect_to url, status: :see_other, allow_other_host: true
     end
   end
 end

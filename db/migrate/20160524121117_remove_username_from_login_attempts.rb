@@ -1,4 +1,4 @@
-class RemoveUsernameFromLoginAttempts < ActiveRecord::Migration
+class RemoveUsernameFromLoginAttempts < ActiveRecord::Migration[7.2]
   def up
     remove_column :casino_login_attempts, :username
     change_column_null :casino_login_attempts, :user_id, false

@@ -1,3 +1,5 @@
+require 'rails-controller-testing'
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_base_class_for_anonymous_controllers = false
@@ -16,4 +18,9 @@ RSpec.configure do |config|
     # TODO: we should maybe port existing tests to the new expect syntax
     c.syntax = [:should, :expect]
   end
+
+  config.include Rails::Controller::Testing::TestProcess, type: :controller
+  config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
+
+  config.include FactoryBot::Syntax::Methods
 end

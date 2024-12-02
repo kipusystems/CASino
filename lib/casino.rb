@@ -1,7 +1,8 @@
 require 'active_support/configurable'
+require 'casino/version'
 require 'casino/engine'
 
-module CASino
+module Casino
   include ActiveSupport::Configurable
 
   defaults = {
@@ -9,8 +10,8 @@ module CASino
     require_service_rules: false,
     logger: Rails.logger,
     frontend: HashWithIndifferentAccess.new(
-      sso_name: 'CASino',
-      footer_text: 'Powered by <a href="http://rbcas.com/">CASino</a>'
+      sso_name: 'Casino',
+      footer_text: 'Powered by <a href="http://rbcas.com/">Casino</a>'
     ),
     implementors: HashWithIndifferentAccess.new(
       login_ticket: nil,
@@ -36,7 +37,7 @@ module CASino
       lifetime_unconsumed: 300,
       lifetime_consumed: 86400,
       single_sign_out_notification: {
-        timeout: 5
+        timeout: ENV["RACK_TIMEOUT_SERVICE_TIMEOUT"]&.to_i || 60
       }
     },
     proxy_ticket: {

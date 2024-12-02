@@ -2,14 +2,14 @@
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'coveralls'
-Coveralls.wear!
+# Coveralls.wear!
 
-SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-SimpleCov.start do
-  add_filter '/spec'
-end
+# SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+# SimpleCov.start do
+#   add_filter '/spec'
+# end
 
-require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+require_relative './dummy/config/environment'
 require 'rspec/rails'
 require 'rspec/its'
 require 'webmock/rspec'

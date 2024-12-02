@@ -1,5 +1,5 @@
 # This migration comes from casino (originally 20131022110246)
-class FixLongIndexNames < ActiveRecord::Migration
+class FixLongIndexNames < ActiveRecord::Migration[7.2]
   def change
     # Long names prevent us from doing some migrations, because the resulting
     # temporary index names would be longer than 64 characters:

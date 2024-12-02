@@ -1,16 +1,12 @@
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
-  factory :service_rule, class: CASino::ServiceRule do
-    sequence :order do |n|
-      n
-    end
-    sequence :name do |n|
-      "Rule #{n}"
-    end
+FactoryBot.define do
+  factory :service_rule, class: 'Casino::ServiceRule' do
+    sequence(:order) { |n| n }  # Generates a unique order number
+    sequence(:name) { |n| "Rule #{n}" }  # Generates a unique name
 
     trait :regex do
-      regex true
+      regex { true }  # Sets the regex attribute to true
     end
   end
 end
